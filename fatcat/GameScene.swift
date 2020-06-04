@@ -21,19 +21,20 @@ class GameScene: SKScene {
     
     var background = SKSpriteNode(imageNamed:"background.jpg")
     
-    override func didMove(to view: SKView) {
+    /*override func didMove(to view: SKView) {
         
          background.position = CGPoint(x: 0, y: 0)
          background.size = self.size
          self.addChild(background)
-     }
+     }*/
     
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
         
-        //background.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        //self.addChild(background)
+        background.position = CGPoint(x:0 , y: 0)
+        background.size = self.size
+        self.addChild(background)
         
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
@@ -54,6 +55,47 @@ class GameScene: SKScene {
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
         }
+    }
+    
+    
+    override func didMove(to view: SKView) {
+
+      run(SKAction.repeatForever(
+        SKAction.sequence([
+          SKAction.run(addStar),
+          SKAction.wait(forDuration: 1.0)
+          ])
+      ))
+      
+    //  let backgroundMusic = SKAudioNode(fileNamed: "background-music-aac.caf")
+    //  backgroundMusic.autoplayLooped = true
+    //  addChild(backgroundMusic)
+    }
+    
+    func addStar(){
+        let star = SKSpriteNode(imageNamed: "star")
+        
+        let scale = CGFloat.random(in: 0.1 ... 0.5)
+        star.xScale = scale
+        star.yScale = scale
+        star.zPosition = 1.0
+        
+        star.physicsBody = SKPhysicsBody(rectangleOf: star.size)
+        star.physicsBody?.linearDamping = 1.0
+        star.physicsBody?.friction = 1.0
+        
+                //star.physicsBody?.isDynamic = true // 2
+        //star.physicsBody?.categoryBitMask = PhysicsCategory.star // 3
+        //monster.physicsBody?.contactTestBitMask = PhysicsCategory.projectile // 4
+        //monster.physicsBody?.collisionBitMask = PhysicsCategory.none // 5
+        
+        // let actualX = CGFloat(arc4random()%(UInt32(2*size.width))-(UInt32)size.width
+  
+        let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
+        //let actualX = CGFloat((size.width/2)-50)
+       
+        star.position = CGPoint(x: actualX, y: self.size.height)
+        addChild(star)
     }
     
     
