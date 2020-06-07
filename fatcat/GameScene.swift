@@ -54,8 +54,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let edge = SKShapeNode()
         let pathToDraw = CGMutablePath()
 
-        pathToDraw.move(to: CGPoint(x: (size.width/2 * -1), y: (size.height * -1)))
-        pathToDraw.addLine(to: CGPoint(x:size.width/2, y:  (size.height * -1)))
+        pathToDraw.move(to: CGPoint(x: (size.width * -1), y: (size.height * -1)))
+        pathToDraw.addLine(to: CGPoint(x:size.width, y:  (size.height * -1)))
         edge.path = pathToDraw
         edge.strokeColor = SKColor.red
         
