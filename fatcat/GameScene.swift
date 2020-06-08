@@ -33,6 +33,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       static let all : UInt32 = UInt32.max
       static let star: UInt32 = 0b1       // 1
       static let edge: UInt32 = 0b10      // 2
+      static let fox:  UInt32 = 0b100     // 4
+      static let loop: UInt32 = 0b1000    // 8
     }
     
     override func sceneDidLoad() {
@@ -42,6 +44,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background.position = CGPoint(x:0 , y: 0)
         background.size = self.size
         self.addChild(background)
+        
+        /*
+        let loop = SKSpriteNode()
+        loop.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame) //UIScreen.main.bounds
+        //self.frame
+        loop.physicsBody?.categoryBitMask = PhysicsCategory.loop
+        loop.physicsBody?.contactTestBitMask = PhysicsCategory.fox
+        loop.physicsBody?.collisionBitMask = PhysicsCategory.fox
+        self.addChild(loop)
+        */
     }
     
     
@@ -64,8 +76,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         edge.physicsBody?.categoryBitMask = PhysicsCategory.edge
-        edge.physicsBody?.contactTestBitMask = PhysicsCategory.star
-        edge.physicsBody?.collisionBitMask = PhysicsCategory.star
+        edge.physicsBody?.contactTestBitMask = PhysicsCategory.edge
+        edge.physicsBody?.collisionBitMask = PhysicsCategory.none
         addChild(edge)
         
         run(SKAction.repeatForever(
@@ -81,8 +93,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-      
-      print("didBegin called")
       // 1
       var firstBody: SKPhysicsBody
       var secondBody: SKPhysicsBody
@@ -94,14 +104,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         secondBody = contact.bodyA
       }
       
-      if((firstBody.categoryBitMask & PhysicsCategory.star != 0) &&
-          (secondBody.categoryBitMask & PhysicsCategory.edge != 0)){
-          
-          print("call destroyStar")
-          if let star = firstBody.node as? SKSpriteNode {
-              destroyStar(star: star)
-          }
-      }
+        if(firstBody.categoryBitMask & PhysicsCategory.star != 0){
+            
+            if(secondBody.categoryBitMask & PhysicsCategory.edge != 0){
+                if let star = firstBody.node as? SKSpriteNode {
+                    destroyStar(star: star)
+                }
+            }
+            else if(secondBody.categoryBitMask & PhysicsCategory.fox != 0){
+                if let star = firstBody.node as? SKSpriteNode {
+                    destroyStar(star: star)
+                }
+            }
+            
+        }
     }
     
     func addStar(){
@@ -119,8 +135,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           
           star.physicsBody?.isDynamic = true // 2
           star.physicsBody?.categoryBitMask = PhysicsCategory.star // 3
-          star.physicsBody?.contactTestBitMask = PhysicsCategory.edge // 4
-          star.physicsBody?.collisionBitMask = PhysicsCategory.edge
+          star.physicsBody?.contactTestBitMask = 0b111
+          star.physicsBody?.collisionBitMask = PhysicsCategory.none
           
           let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
          
@@ -147,6 +163,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fox.xScale = 2.5
         fox.yScale = 2.5
         fox.zPosition = 1.0
+        fox.physicsBody = SKPhysicsBody(rectangleOf: fox.size)
+        fox.physicsBody?.affectedByGravity = false
+        fox.physicsBody?.contactTestBitMask = 0b1111
+        fox.physicsBody?.collisionBitMask = PhysicsCategory.loop
+        
+        let xRange = SKRange(lowerLimit:(-1 * size.width/2),upperLimit:size.width/2)
+        let yRange = SKRange(lowerLimit:actualY,upperLimit:actualY)
+        //sprite.constraints = [SKConstraint.positionX(xRange,Y:yRange)] // iOS 9
+        fox.constraints = [SKConstraint.positionX(xRange,y:yRange)]  // iOS 10
         addChild(fox)
         
         if motionManager.isAccelerometerAvailable {
@@ -189,7 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
 
-        let moveAction = SKAction.moveTo(x: destX, duration: 1)
+        let moveAction = SKAction.moveTo(x: destX, duration: 0.5)
         
         let doneAction = SKAction.run({ [weak self] in
              self?.foxMoveEnded()
@@ -213,10 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func destroyStar(star: SKSpriteNode){
-        
-        print("star destroyed")
         star.removeFromParent()
-    
     }
 }
 
