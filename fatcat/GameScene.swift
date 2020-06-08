@@ -9,6 +9,7 @@
 import SpriteKit
 import GameplayKit
 import UIKit
+import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -19,8 +20,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     
-    var background = SKSpriteNode(imageNamed:"background.jpg")
-    var fox =  SKSpriteNode(imageNamed: "fox_start.png")
+    private var background = SKSpriteNode(imageNamed:"background.jpg")
+    private var fox =  SKSpriteNode()
+    private var foxRunFrames: [SKTexture] = []
+   
+    var motionManager = CMMotionManager()
+    var destX:CGFloat  = 0.0
     
     
     struct PhysicsCategory {
@@ -44,13 +49,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self
         
-        let actualY = CGFloat((size.height/2) * -1 * 0.6)
-        fox.xScale = 2.5
-        fox.yScale = 2.5
-        fox.position = CGPoint(x:0, y: actualY)
-        fox.zPosition = 1.0
-        addChild(fox)
-        
+        makeFox()
+
         let edge = SKShapeNode()
         let pathToDraw = CGMutablePath()
 
@@ -105,46 +105,111 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func addStar(){
+          
+          let star = SKSpriteNode(imageNamed: "star")
+          
+          let scale = CGFloat.random(in: 0.1 ... 0.5)
+          star.xScale = scale
+          star.yScale = scale
+          star.zPosition = 1.0
+          
+          star.physicsBody = SKPhysicsBody(rectangleOf: star.size)
+          star.physicsBody?.linearDamping = 1.0
+          star.physicsBody?.friction = 1.0
+          
+          star.physicsBody?.isDynamic = true // 2
+          star.physicsBody?.categoryBitMask = PhysicsCategory.star // 3
+          star.physicsBody?.contactTestBitMask = PhysicsCategory.edge // 4
+          star.physicsBody?.collisionBitMask = PhysicsCategory.edge
+          
+          let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
+         
+          star.position = CGPoint(x: actualX, y: self.size.height)
+          addChild(star)
+      }
+    
+    func makeFox(){
+        let foxAnimatedAtlas = SKTextureAtlas(named: "fox")
+        var runFrames: [SKTexture] = []
         
-        let star = SKSpriteNode(imageNamed: "star")
+        let numImages = foxAnimatedAtlas.textureNames.count
         
-        let scale = CGFloat.random(in: 0.1 ... 0.5)
-        star.xScale = scale
-        star.yScale = scale
-        star.zPosition = 1.0
+        for i in 1...numImages{
+            let foxTextureName = "fox\(i)"
+            runFrames.append(foxAnimatedAtlas.textureNamed(foxTextureName))
+        }
+        foxRunFrames = runFrames
         
-        star.physicsBody = SKPhysicsBody(rectangleOf: star.size)
-        star.physicsBody?.linearDamping = 1.0
-        star.physicsBody?.friction = 1.0
+        let firstFrameTexture = foxRunFrames[0]
+        fox = SKSpriteNode(texture: firstFrameTexture)
+        let actualY = CGFloat((size.height/2) * -1 * 0.6)
+        fox.position = CGPoint(x: frame.midX, y:actualY)
+        fox.xScale = 2.5
+        fox.yScale = 2.5
+        fox.zPosition = 1.0
+        addChild(fox)
         
-        star.physicsBody?.isDynamic = true // 2
-        star.physicsBody?.categoryBitMask = PhysicsCategory.star // 3
-        star.physicsBody?.contactTestBitMask = PhysicsCategory.edge // 4
-        star.physicsBody?.collisionBitMask = PhysicsCategory.edge
-        
-        let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
-       
-        star.position = CGPoint(x: actualX, y: self.size.height)
-        addChild(star)
+        if motionManager.isAccelerometerAvailable {
+        motionManager.accelerometerUpdateInterval = 0.01
+        motionManager.startAccelerometerUpdates(to: .main) {
+            (data, error) in
+            guard let data = data, error == nil else {
+                return
+            }
+            let currentX = self.fox.position.x
+            self.destX = currentX + CGFloat(data.acceleration.x * 500)
+            }
+        }
     }
+    
+    func animateFox() {
+      fox.run(SKAction.repeatForever(
+        SKAction.animate(with: foxRunFrames,
+                         timePerFrame: 0.1,
+                         resize: false,
+                         restore: true)),
+               withKey:"runningInPlaceFox")
+    }
+    
+    func moveFox() {
+        
+        var multiplierForDirection: CGFloat = 1.0
+        
+        if let accelerometerData = motionManager.accelerometerData {
+            if(accelerometerData.acceleration.x < 0){
+                multiplierForDirection = -1.0
+            }
+        }
+        
+        fox.xScale = abs(fox.xScale) * multiplierForDirection
+        
+        if fox.action(forKey: "runningInPlaceFox") == nil {
+            // if legs are not moving, start them
+            animateFox()
+            
+        }
 
+        let moveAction = SKAction.moveTo(x: destX, duration: 1)
+        
+        let doneAction = SKAction.run({ [weak self] in
+             self?.foxMoveEnded()
+           })
+        
+      let moveActionWithDone = SKAction.sequence([moveAction, doneAction])
+      fox.run(moveActionWithDone, withKey:"foxMoving")
+    }
+    
+    func foxMoveEnded() {
+      fox.removeAllActions()
+    }
+    
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
         
-        // Initialize _lastUpdateTime if it has not already been
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
-        }
+        let action = SKAction.run({ [weak self] in
+          self?.moveFox()
+        })
         
-        // Calculate time since last update
-        let dt = currentTime - self.lastUpdateTime
-        
-        // Update entities
-        for entity in self.entities {
-            entity.update(deltaTime: dt)
-        }
-        
-        self.lastUpdateTime = currentTime
+        fox.run(action)
     }
     
     func destroyStar(star: SKSpriteNode){
