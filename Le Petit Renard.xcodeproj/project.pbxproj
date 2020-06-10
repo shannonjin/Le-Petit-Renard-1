@@ -49,10 +49,10 @@
 		1A9327572486EEAE00A34364 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A93275A2486EEAE00A34364 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1A93275C2486EEAE00A34364 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A9327612486EEAE00A34364 /* fatcatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fatcatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A9327612486EEAE00A34364 /* Le Petit Renard Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Le Petit Renard Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A9327652486EEAE00A34364 /* fatcatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fatcatTests.swift; sourceTree = "<group>"; };
 		1A9327672486EEAE00A34364 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A93276C2486EEAE00A34364 /* fatcatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fatcatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A93276C2486EEAE00A34364 /* Le Petit Renard UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Le Petit Renard UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A9327702486EEAE00A34364 /* fatcatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fatcatUITests.swift; sourceTree = "<group>"; };
 		1A9327722486EEAE00A34364 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A9327C0248F0DD300A34364 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
@@ -87,9 +87,9 @@
 		1A93273E2486EEAA00A34364 = {
 			isa = PBXGroup;
 			children = (
-				1A9327492486EEAA00A34364 /* fatcat */,
-				1A9327642486EEAE00A34364 /* fatcatTests */,
-				1A93276F2486EEAE00A34364 /* fatcatUITests */,
+				1A9327492486EEAA00A34364 /* Le Petit Renard */,
+				1A9327642486EEAE00A34364 /* Le Petit Renard Tests */,
+				1A93276F2486EEAE00A34364 /* Le Petit Renard UITests */,
 				1A9327482486EEAA00A34364 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,13 +98,13 @@
 			isa = PBXGroup;
 			children = (
 				1A9327472486EEAA00A34364 /* fatcat.app */,
-				1A9327612486EEAE00A34364 /* fatcatTests.xctest */,
-				1A93276C2486EEAE00A34364 /* fatcatUITests.xctest */,
+				1A9327612486EEAE00A34364 /* Le Petit Renard Tests.xctest */,
+				1A93276C2486EEAE00A34364 /* Le Petit Renard UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1A9327492486EEAA00A34364 /* fatcat */ = {
+		1A9327492486EEAA00A34364 /* Le Petit Renard */ = {
 			isa = PBXGroup;
 			children = (
 				1A9327C4249082C700A34364 /* GameOverScene.sks */,
@@ -119,33 +119,33 @@
 				1A93275C2486EEAE00A34364 /* Info.plist */,
 				1A9327C0248F0DD300A34364 /* GameOverScene.swift */,
 			);
-			path = fatcat;
+			path = "Le Petit Renard";
 			sourceTree = "<group>";
 		};
-		1A9327642486EEAE00A34364 /* fatcatTests */ = {
+		1A9327642486EEAE00A34364 /* Le Petit Renard Tests */ = {
 			isa = PBXGroup;
 			children = (
 				1A9327652486EEAE00A34364 /* fatcatTests.swift */,
 				1A9327672486EEAE00A34364 /* Info.plist */,
 			);
-			path = fatcatTests;
+			path = "Le Petit Renard Tests";
 			sourceTree = "<group>";
 		};
-		1A93276F2486EEAE00A34364 /* fatcatUITests */ = {
+		1A93276F2486EEAE00A34364 /* Le Petit Renard UITests */ = {
 			isa = PBXGroup;
 			children = (
 				1A9327702486EEAE00A34364 /* fatcatUITests.swift */,
 				1A9327722486EEAE00A34364 /* Info.plist */,
 			);
-			path = fatcatUITests;
+			path = "Le Petit Renard UITests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1A9327462486EEAA00A34364 /* fatcat */ = {
+		1A9327462486EEAA00A34364 /* Le Petit Renard  */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A9327752486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcat" */;
+			buildConfigurationList = 1A9327752486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard " */;
 			buildPhases = (
 				1A9327432486EEAA00A34364 /* Sources */,
 				1A9327442486EEAA00A34364 /* Frameworks */,
@@ -155,14 +155,14 @@
 			);
 			dependencies = (
 			);
-			name = fatcat;
+			name = "Le Petit Renard ";
 			productName = fatcat;
 			productReference = 1A9327472486EEAA00A34364 /* fatcat.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1A9327602486EEAE00A34364 /* fatcatTests */ = {
+		1A9327602486EEAE00A34364 /* Le Petit Renard Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A9327782486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcatTests" */;
+			buildConfigurationList = 1A9327782486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard Tests" */;
 			buildPhases = (
 				1A93275D2486EEAE00A34364 /* Sources */,
 				1A93275E2486EEAE00A34364 /* Frameworks */,
@@ -173,14 +173,14 @@
 			dependencies = (
 				1A9327632486EEAE00A34364 /* PBXTargetDependency */,
 			);
-			name = fatcatTests;
+			name = "Le Petit Renard Tests";
 			productName = fatcatTests;
-			productReference = 1A9327612486EEAE00A34364 /* fatcatTests.xctest */;
+			productReference = 1A9327612486EEAE00A34364 /* Le Petit Renard Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1A93276B2486EEAE00A34364 /* fatcatUITests */ = {
+		1A93276B2486EEAE00A34364 /* Le Petit Renard UITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A93277B2486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcatUITests" */;
+			buildConfigurationList = 1A93277B2486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard UITests" */;
 			buildPhases = (
 				1A9327682486EEAE00A34364 /* Sources */,
 				1A9327692486EEAE00A34364 /* Frameworks */,
@@ -191,9 +191,9 @@
 			dependencies = (
 				1A93276E2486EEAE00A34364 /* PBXTargetDependency */,
 			);
-			name = fatcatUITests;
+			name = "Le Petit Renard UITests";
 			productName = fatcatUITests;
-			productReference = 1A93276C2486EEAE00A34364 /* fatcatUITests.xctest */;
+			productReference = 1A93276C2486EEAE00A34364 /* Le Petit Renard UITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -219,7 +219,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1A9327422486EEAA00A34364 /* Build configuration list for PBXProject "Petit Fox" */;
+			buildConfigurationList = 1A9327422486EEAA00A34364 /* Build configuration list for PBXProject "Le Petit Renard" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -232,9 +232,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1A9327462486EEAA00A34364 /* fatcat */,
-				1A9327602486EEAE00A34364 /* fatcatTests */,
-				1A93276B2486EEAE00A34364 /* fatcatUITests */,
+				1A9327462486EEAA00A34364 /* Le Petit Renard  */,
+				1A9327602486EEAE00A34364 /* Le Petit Renard Tests */,
+				1A93276B2486EEAE00A34364 /* Le Petit Renard UITests */,
 			);
 		};
 /* End PBXProject section */
@@ -302,12 +302,12 @@
 /* Begin PBXTargetDependency section */
 		1A9327632486EEAE00A34364 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1A9327462486EEAA00A34364 /* fatcat */;
+			target = 1A9327462486EEAA00A34364 /* Le Petit Renard  */;
 			targetProxy = 1A9327622486EEAE00A34364 /* PBXContainerItemProxy */;
 		};
 		1A93276E2486EEAE00A34364 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1A9327462486EEAA00A34364 /* fatcat */;
+			target = 1A9327462486EEAA00A34364 /* Le Petit Renard  */;
 			targetProxy = 1A93276D2486EEAE00A34364 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -452,12 +452,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YH2S2LS42G;
-				INFOPLIST_FILE = fatcat/Info.plist;
+				INFOPLIST_FILE = "Le Petit Renard/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = sj2802.fatcat;
+				PRODUCT_BUNDLE_IDENTIFIER = "sj2802.Le Petit Renard";
 				PRODUCT_NAME = fatcat;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -470,12 +470,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YH2S2LS42G;
-				INFOPLIST_FILE = fatcat/Info.plist;
+				INFOPLIST_FILE = "Le Petit Renard/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = sj2802.fatcat;
+				PRODUCT_BUNDLE_IDENTIFIER = "sj2802.Le Petit Renard";
 				PRODUCT_NAME = fatcat;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -565,7 +565,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A9327422486EEAA00A34364 /* Build configuration list for PBXProject "Petit Fox" */ = {
+		1A9327422486EEAA00A34364 /* Build configuration list for PBXProject "Le Petit Renard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A9327732486EEAE00A34364 /* Debug */,
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A9327752486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcat" */ = {
+		1A9327752486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard " */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A9327762486EEAE00A34364 /* Debug */,
@@ -583,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A9327782486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcatTests" */ = {
+		1A9327782486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A9327792486EEAE00A34364 /* Debug */,
@@ -592,7 +592,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A93277B2486EEAE00A34364 /* Build configuration list for PBXNativeTarget "fatcatUITests" */ = {
+		1A93277B2486EEAE00A34364 /* Build configuration list for PBXNativeTarget "Le Petit Renard UITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A93277C2486EEAE00A34364 /* Debug */,
