@@ -13,56 +13,49 @@ import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var entities = [GKEntity]()
-    var graphs = [String : GKGraph]()
-    
     private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
     
-    private var background = SKSpriteNode(imageNamed:"background.jpg")
-    private var fox =  SKSpriteNode()
-    private var foxRunFrames: [SKTexture] = []
-   
-    var motionManager = CMMotionManager()
-    var destX:CGFloat  = 0.0
-    
-    
-    struct PhysicsCategory {
-      static let none: UInt32 = 0
-      static let all : UInt32 = UInt32.max
-      static let star: UInt32 = 0b1       // 1
-      static let edge: UInt32 = 0b10      // 2
-      static let fox:  UInt32 = 0b100     // 4
-      static let loop: UInt32 = 0b1000    // 8
+    private var label : SKLabelNode!
+    private var score = 0 {
+        didSet {
+            label.text = "\(score)"
+        }
     }
     
+    private var fox =  SKSpriteNode()
+    private var foxRunFrames: [SKTexture] = []
+  
+    private var motionManager = CMMotionManager()
+    private var destX:CGFloat  = 0.0
+    
+    struct PhysicsCategory {
+      static let none:     UInt32 = 0
+      static let all :     UInt32 = UInt32.max
+      static let star:     UInt32 = 0b1       // 1
+      static let edge:     UInt32 = 0b10      // 2
+      static let fox:      UInt32 = 0b100     // 4
+      static let loop:     UInt32 = 0b1000    // 8
+      static let asteroid: UInt32 = 0b10000 //16
+    }
+    
+    private weak var previousScene: SKScene? = nil
+    
     override func sceneDidLoad() {
-
-        self.lastUpdateTime = 0
         
-        background.position = CGPoint(x:0 , y: 0)
+        let background = SKSpriteNode(imageNamed:"background")
+        background.position = CGPoint(x:frame.midX , y: frame.midY)
         background.size = self.size
         self.addChild(background)
-        
-        /*
-        let loop = SKSpriteNode()
-        loop.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame) //UIScreen.main.bounds
-        //self.frame
-        loop.physicsBody?.categoryBitMask = PhysicsCategory.loop
-        loop.physicsBody?.contactTestBitMask = PhysicsCategory.fox
-        loop.physicsBody?.collisionBitMask = PhysicsCategory.fox
-        self.addChild(loop)
-        */
     }
     
     
     override func didMove(to view: SKView) {
         
+        
         physicsWorld.contactDelegate = self
         
         makeFox()
-
+        
         let edge = SKShapeNode()
         let pathToDraw = CGMutablePath()
 
@@ -70,6 +63,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pathToDraw.addLine(to: CGPoint(x:size.width, y:  (size.height * -1)))
         edge.path = pathToDraw
         edge.strokeColor = SKColor.red
+        
+        label = SKLabelNode()
+        label.text = "0"
+        label.position = CGPoint(x: frame.midX, y: (frame.height/4))
+        label.fontSize = 100
+        label.zPosition = 1.0
+        addChild(label)
         
         if let path = edge.path{
             edge.physicsBody = SKPhysicsBody(edgeChainFrom: path)
@@ -79,17 +79,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         edge.physicsBody?.contactTestBitMask = PhysicsCategory.edge
         edge.physicsBody?.collisionBitMask = PhysicsCategory.none
         addChild(edge)
-        
+   
         run(SKAction.repeatForever(
             SKAction.sequence([
                 SKAction.run(addStar),
                 SKAction.wait(forDuration: 1.0)
             ])
       ))
+        
+        run(SKAction.repeatForever(
+                   SKAction.sequence([
+                       SKAction.wait(forDuration: 5.0),
+                       SKAction.run(addAsteroid)
+                   ])
+             ))
       
     //  let backgroundMusic = SKAudioNode(fileNamed: "background-music-aac.caf")
     //  backgroundMusic.autoplayLooped = true
-    //  addChild(backgroundMusic)
+    //  addChild(backgroundMusic)*/
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -107,21 +114,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(firstBody.categoryBitMask & PhysicsCategory.star != 0){
             
             if(secondBody.categoryBitMask & PhysicsCategory.edge != 0){
+                
                 if let star = firstBody.node as? SKSpriteNode {
-                    destroyStar(star: star)
+                    star.removeFromParent()
                 }
             }
             else if(secondBody.categoryBitMask & PhysicsCategory.fox != 0){
+                
                 if let star = firstBody.node as? SKSpriteNode {
-                    destroyStar(star: star)
+                    score += Int(star.size.width/20)
+                    star.removeFromParent()
                 }
             }
-            
+        }
+        else if(firstBody.categoryBitMask & PhysicsCategory.edge != 0){
+           
+            if let asteroid = secondBody.node as? SKSpriteNode {
+                asteroid.removeFromParent()
+            }
+        }
+        else if(firstBody.categoryBitMask & PhysicsCategory.fox != 0){
+            if let asteroid = secondBody.node as? SKSpriteNode {
+                score -= Int(asteroid.size.width/5)
+                if(score <= 0){
+                    
+                    let gameOverScene = GameOverScene(fileNamed:"GameOverScene")
+                    
+                    if let gameOverScene = gameOverScene{
+                        gameOverScene.scaleMode = .aspectFit
+                        self.removeAllActions()
+                        self.removeAllChildren()
+                        let reveal = SKTransition.crossFade(withDuration: 1.0)
+                        self.view?.presentScene(gameOverScene, transition:reveal)
+                    }
+                    
+                }
+            }
         }
     }
     
     func addStar(){
-          
+        
           let star = SKSpriteNode(imageNamed: "star")
           
           let scale = CGFloat.random(in: 0.1 ... 0.5)
@@ -135,7 +168,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           
           star.physicsBody?.isDynamic = true // 2
           star.physicsBody?.categoryBitMask = PhysicsCategory.star // 3
-          star.physicsBody?.contactTestBitMask = 0b111
+          star.physicsBody?.contactTestBitMask = PhysicsCategory.star | PhysicsCategory.edge | PhysicsCategory.fox
           star.physicsBody?.collisionBitMask = PhysicsCategory.none
           
           let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
@@ -165,8 +198,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fox.zPosition = 1.0
         fox.physicsBody = SKPhysicsBody(rectangleOf: fox.size)
         fox.physicsBody?.affectedByGravity = false
-        fox.physicsBody?.contactTestBitMask = 0b1111
-        fox.physicsBody?.collisionBitMask = PhysicsCategory.loop
+        fox.physicsBody?.contactTestBitMask = 0b11111
+        fox.physicsBody?.categoryBitMask = PhysicsCategory.fox
+        fox.physicsBody?.collisionBitMask = PhysicsCategory.loop | PhysicsCategory.asteroid
         
         let xRange = SKRange(lowerLimit:(-1 * size.width/2),upperLimit:size.width/2)
         let yRange = SKRange(lowerLimit:actualY,upperLimit:actualY)
@@ -177,16 +211,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if motionManager.isAccelerometerAvailable {
         motionManager.accelerometerUpdateInterval = 0.01
         motionManager.startAccelerometerUpdates(to: .main) {
+            [weak self]
             (data, error) in
             guard let data = data, error == nil else {
                 return
             }
-            let currentX = self.fox.position.x
-            self.destX = currentX + CGFloat(data.acceleration.x * 500)
+            
+            if let scene = self{
+                let currentX = scene.fox.position.x
+                scene.destX = currentX + CGFloat(data.acceleration.x * 500)
+            }
+            
             }
         }
     }
-    
+ 
     func animateFox() {
       fox.run(SKAction.repeatForever(
         SKAction.animate(with: foxRunFrames,
@@ -228,6 +267,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       fox.removeAllActions()
     }
     
+ 
     override func update(_ currentTime: TimeInterval) {
         
         let action = SKAction.run({ [weak self] in
@@ -237,8 +277,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fox.run(action)
     }
     
-    func destroyStar(star: SKSpriteNode){
-        star.removeFromParent()
+    func addAsteroid(){
+        let asteroidAnimatedAtlas = SKTextureAtlas(named: "asteroid_medium")
+        var runFrames: [SKTexture] = []
+        
+        let numImages = asteroidAnimatedAtlas.textureNames.count
+        
+        for i in 1...numImages{
+            let asteroidTextureName = "a\(i)"
+            runFrames.append(asteroidAnimatedAtlas.textureNamed(asteroidTextureName))
+        }
+        
+        let firstFrameTexture = runFrames[0]
+        let asteroid = SKSpriteNode(texture: firstFrameTexture)
+        let actualX = CGFloat.random(in: (-1*size.width/2)+50 ... (size.width/2)-50)
+        
+        asteroid.position = CGPoint(x: actualX, y: size.height)
+        
+        if(score > 300){
+            let scale = CGFloat.random(in: 1.0 ... 3.0)
+            asteroid.xScale = scale
+            asteroid.yScale = scale
+        }
+        
+        asteroid.zPosition = 1.0
+        
+        asteroid.physicsBody = SKPhysicsBody(rectangleOf: asteroid.size)
+        asteroid.physicsBody?.linearDamping = 1.0
+        asteroid.physicsBody?.friction = 1.0
+        
+        asteroid.physicsBody?.isDynamic = true // 2
+        asteroid.physicsBody?.categoryBitMask = PhysicsCategory.asteroid // 3
+        asteroid.physicsBody?.contactTestBitMask = PhysicsCategory.fox | PhysicsCategory.edge
+        asteroid.physicsBody?.collisionBitMask = PhysicsCategory.fox
+        
+        
+        addChild(asteroid)
+        
+        asteroid.run(SKAction.repeatForever(
+        SKAction.animate(with: runFrames,
+                         timePerFrame: 0.1,
+                         resize: false,
+                         restore: true)),
+               withKey:"fallingAsteroid")
+        
+
+    }
+
+    deinit{
+        print("deinit")
     }
 }
 
